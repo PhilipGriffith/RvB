@@ -57,7 +57,19 @@ def compute_monthly_cost(chump):
     return costs
 
 
+def compute_monthly_mortgage_payment(loan_amount, number_of_payments, interest_rate):
+
+    monthly_interest_rate = interest_rate / 12
+    numerator = ((1 + monthly_interest_rate) ** number_of_payments) - 1
+    denominator = monthly_interest_rate * (1 + monthly_interest_rate) ** number_of_payments
+    discount_factor = numerator / denominator
+
+    return loan_amount / discount_factor
+
+
 if __name__ == '__main__':
 
     for chump in chumps:
         compute_monthly_cost(chump)
+
+    print(compute_monthly_mortgage_payment(165000, 360, .045))
