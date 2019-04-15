@@ -2,11 +2,7 @@
 class Finances:
 
     def __init__(self):
-        self.income = 40000
         self.savings = 20000
-        self.housing_budget_percent = 30
-        self.housing_budget = (self.income / 12) * (self.housing_budget_percent / 100)
-
         self.rent = 770
         self.house_value = 200000
         self.housing_appreciation_percent = 4.7
@@ -78,15 +74,6 @@ class Investment:
         print('Amount: {:.2f}'.format(self.amount))
 
 
-i = Investment(100)
-i.details()
-for t in range(12):
-    i.compound()
-    i.details()
-print(i.sell())
-
-
-
 # Todo Figure this out
 rate_30yr_0_pts = (4.0, 4.0, 4.0, 4.0, 4.0, 4.25, 4.375, 4.0, 4.19, 4.25, 5.125)
 apr_30yr_0_pts = (4.269, 4.270, 4.289, 4.310, 4.0, 4.299, 4.375, 4.045, 4.249, 4.25, 5.215)
@@ -96,7 +83,7 @@ rate_15yr_0_pts = (3.5, 3.625, 3.625, 3.625, 3.5, 3.5, 3.75, 3.625, 3.75, 3.79)
 apr_15yr_0_pts = (3.778, 3.824, 3.847, 3.854, 3.5, 3.584, 3.823, 3.656, 3.75, 3.893)
 fees_15yr_0_pts = (1095, 134, 410, 493, 1, 1150, 995, 383, 0, 1258)
 
-# todo put this in a mortgage class
+
 def compute_closing_cost(years=30):
 
     boa_closing_cost_30yr = 9934 - 1712  # Includes 1712 in points
@@ -120,8 +107,4 @@ def compute_closing_cost(years=30):
 
 if __name__ == '__main__':
 
-    loan = Loan(180000)
-
-    mh = MonthlyHousing(loan).cost
-    print(mh)
-
+    pass
