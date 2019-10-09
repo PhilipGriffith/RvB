@@ -4,11 +4,11 @@ class House:
     def __init__(self):
         self.price = 200000
         self.value = self.price
-        self.appreciation_rate_percent = 4.7
+        self.appreciation_rate_percent = 4.7  # 2.53? Also see below.
         self.mortgage_price = self.value + self.compute_closing_cost()
 
     def appreciate(self):
-        self.value += self.value * ((self.appreciation_rate_percent / 100) / 12)
+        self.value += self.value * (self.appreciation_rate_percent / 100)
 
     @staticmethod
     def compute_closing_cost(years=30):
@@ -36,10 +36,10 @@ class Apartment:
 
     def __init__(self):
         self.rent = 770
-        self.rent_increase_percent = 1.5
+        self.rent_increase_percent = 2  # Approximates the rise from $630 to $770 at Londontown over the past 10 years
 
-    def rate_increase(self):
-        self.rent += self.rent * ((self.rent_increase_percent / 100) / 12)
+    def rent_increase(self):
+        self.rent += self.rent * (self.rent_increase_percent / 100)
 
 
 class MonthlyHousing:
@@ -47,7 +47,7 @@ class MonthlyHousing:
     def __init__(self, loan=None, house_price=None, house_value=None, rent=None):
         super().__init__()
         self.payment = loan.payment if loan else rent
-        self.utilities = 200 if loan else 90
+        self.utilities = 180 if loan else 90
         self.maintenance = (0.02 * house_price) / 12 if loan else 0  # Rule of thumb: 2-5%
         # Assuming static insurance and property tax rates
         self.insurance = ((1020 + 1191 + 1390) / 3) / 12 if loan else 0
@@ -91,9 +91,9 @@ class Loan:
 
     def details(self, v=False):
         if v:
-            print('Interest rate: ~{:.2f}'.format(self.annual_interest_rate))
-            print('Payment: ~{:.2f}'.format(self.payment))
-        print('Amount: ~{:.2f}'.format(self.amount))
+            print('Interest rate: {:.2f}%'.format(self.annual_interest_rate * 100))
+            print('Payment: {:.2f}'.format(self.payment))
+        print('Amount: {:.2f}'.format(self.amount))
         print('Number of payments:', self.number_of_payments)
 
 
@@ -108,8 +108,10 @@ class Investment:
 
     def compound(self, amount=0):
         self.amount += self.amount * self.monthly_rate
-        self.amount -= self.amount * ((self.fee_rate_percent / 100) / 12)
         self.amount += amount
+
+    def fee(self):
+        self.amount -= self.amount * (self.fee_rate_percent / 100)
 
     def sell(self):
         return self.amount - (self.amount * (self.commission_rate_percent / 100))
@@ -126,24 +128,81 @@ rate_15yr_0_pts = (3.5, 3.625, 3.625, 3.625, 3.5, 3.5, 3.75, 3.625, 3.75, 3.79)
 if __name__ == '__main__':
 
     balance = 20000
-    years = 50
+    years = 30
 
-    # 30-year Mortgage
+    # House with 30-year Mortgage
     house = House()
     loan_amount = house.mortgage_price - balance
     loan = Loan(loan_amount)
     balance = 0
 
-    # Todo Add investment
+    # Apartment
     apartment = Apartment()
+
+    # Todo Add investment
 
     for month in range(years * 12):
 
         house_cost = MonthlyHousing(loan, house.price, house.value).cost
         rent_cost = MonthlyHousing(rent=apartment.rent).cost
         difference = house_cost - rent_cost
+
         if loan.number_of_payments > 0:
             loan.make_payment()
-        house.appreciate()
-        apartment.rate_increase()
-    # print(house.value)
+
+        if not month % 12:
+            house.appreciate()
+            apartment.rent_increase()
+
+    print(house.value)
+
+
+
+# Annual Home Price Appreciation Rates
+x = (3.69,
+     4.36,
+     0.27,
+     7.33,
+     1.48,
+     4.78,
+     1.50,
+     4.38,
+     1.00,
+     4.43,
+     4.73,
+     -0.33,
+     5.43,
+     6.94,
+     6.57,
+     9.57,
+     15.11,
+     16.64,
+     8.81,
+     -0.50,
+     -7.06,
+     -8.40,
+     -5.95,
+     -5.89,
+     -5.51,
+     4.76,
+     2.04,
+     6.07,
+     2.84,
+     9.17)
+print(sum(x)/len(x))
+
+
+# Average monthly rent
+# Date 	Tallahassee, FLMedian
+# 2017 	$977
+# 2016 	$958
+# 2015 	$930
+# 2014 	$920
+# 2013 	$863
+# 2012 	$899
+# 2011 	$939
+# 2010 	$969
+# 2009 	$922
+# 2008 	$957
+# 2007 	$926
+# 2006 	$934
